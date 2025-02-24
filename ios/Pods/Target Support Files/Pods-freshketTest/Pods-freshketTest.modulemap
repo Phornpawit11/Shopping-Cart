@@ -1,0 +1,6 @@
+module Pods_freshketTest {
+  umbrella header "Pods-freshketTest-umbrella.h"
+
+  export *
+  module * { export * }
+}
