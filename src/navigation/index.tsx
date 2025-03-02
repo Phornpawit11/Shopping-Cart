@@ -1,105 +1,86 @@
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HeaderButton, Text } from '@react-navigation/elements';
-import {
-  createStaticNavigation,
-  StaticParamList,
-} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 import { Image } from 'react-native';
-import bell from '../assets/bell.png';
-import newspaper from '../assets/newspaper.png';
-import { Home } from './screens/Home';
+import circlestar from '../assets/circlestar.png';
 import { Profile } from './screens/Profile';
 import { Settings } from './screens/Settings';
-import { Updates } from './screens/Updates';
 import { NotFound } from './screens/NotFound';
+import { ShoppingScreen } from './screens/ShoppingScreen/index';
+import { CartScreen } from './screens/CartScreen/index';
+import { CartSuccessScreen } from './screens/CartSuccessScreen';
 
-const HomeTabs = createBottomTabNavigator({
-  screens: {
-    Home: {
-      screen: Home,
-      options: {
-        title: 'Feed',
-        tabBarIcon: ({ color, size }) => (
-          <Image
-            source={newspaper}
-            tintColor={color}
-            style={{
-              width: size,
-              height: size,
-            }}
-          />
-        ),
-      },
-    },
-    Updates: {
-      screen: Updates,
-      options: {
-        tabBarIcon: ({ color, size }) => (
-          <Image
-            source={bell}
-            tintColor={color}
-            style={{
-              width: size,
-              height: size,
-            }}
-          />
-        ),
-      },
-    },
-  },
-});
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
-const RootStack = createNativeStackNavigator({
-  screens: {
-    HomeTabs: {
-      screen: HomeTabs,
-      options: {
-        title: 'Home',
-        headerShown: false,
-      },
-    },
-    Profile: {
-      screen: Profile,
-      linking: {
-        path: ':user(@[a-zA-Z0-9-_]+)',
-        parse: {
-          user: (value) => value.replace(/^@/, ''),
-        },
-        stringify: {
-          user: (value) => `@${value}`,
-        },
-      },
-    },
-    Settings: {
-      screen: Settings,
-      options: ({ navigation }) => ({
-        presentation: 'modal',
-        headerRight: () => (
-          <HeaderButton onPress={navigation.goBack}>
-            <Text>Close</Text>
-          </HeaderButton>
-        ),
-      }),
-    },
-    NotFound: {
-      screen: NotFound,
-      options: {
-        title: '404',
-      },
-      linking: {
-        path: '*',
-      },
-    },
-  },
-});
+// Stack Navigator สำหรับ Cart
+const CartStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Carts"
+        component={CartScreen}
+        options={{ presentation: 'fullScreenModal', headerShown: false }}
+      />
 
-export const Navigation = createStaticNavigation(RootStack);
+    </Stack.Navigator>
+  );
+};
 
-type RootStackParamList = StaticParamList<typeof RootStack>;
+// Bottom Tab Navigator
+const HomeTabs = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Shopping"
+        component={ShoppingScreen}
+        options={{
+          title: 'Shopping',
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Image source={circlestar} tintColor={color} style={{ width: size, height: size }} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartStack}
+        options={{
+          title: 'Cart',
+          tabBarIcon: ({ color, size }) => (
+            <Image source={circlestar} tintColor={color} style={{ width: size, height: size }} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
+// Root Stack Navigator
+const RootStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="HomeTabs"
+        component={HomeTabs}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CartSuccess"
+        component={CartSuccessScreen}
+        options={{ title: "", headerBackTitle: "Cart" }}
+      />
+      <Stack.Screen name="NotFound" component={NotFound} />
+    </Stack.Navigator>
+  );
+};
+
+// Export Navigation Component
+export const Navigation = ({ onReady }: any) => {
+  return (
+    <NavigationContainer onReady={onReady}>
+      <RootStack />
+    </NavigationContainer>
+  );
+};
