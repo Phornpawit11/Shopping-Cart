@@ -14,8 +14,6 @@ const ProductComponent = ({ item, swipeable, handleRemove }: { item: ProductList
     useFocusEffect(
         React.useCallback(() => {
             if (swipeable===false) return
-            console.log("red");
-            
             const task = InteractionManager.runAfterInteractions(() => {
                 setSelectedAmount(item.selectedAmount)
             });

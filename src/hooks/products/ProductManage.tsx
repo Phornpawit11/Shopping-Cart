@@ -37,22 +37,18 @@ const productReducer = (prevState: ProductState, action: ProductAction): Product
 
 const ProductManage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [cart, dispatch] = useReducer(productReducer, { product: [] });
-    console.log({ cart });
 
     const ActionCart = {
         cartInCrease: (propProduct: ProductList) => {
             const dataUpdate = CartCalculate.inCrease({ cart, propProduct })
-            console.log({ dataUpdate });
             dispatch({ type: "SET_PRODUCT", payload: dataUpdate });
         },
         cartDeCrease: (propProduct: ProductList) => {
             const dataUpdate = CartCalculate.deCrease({ cart, propProduct })
-            console.log({ dataUpdate });
             dispatch({ type: "SET_PRODUCT", payload: dataUpdate });
         },
         cartRemove: (propProduct: ProductList) => {
             const dataUpdate = CartCalculate.remove({ cart, propProduct })
-            console.log({ dataUpdate });
 
             dispatch({ type: "SET_PRODUCT", payload: dataUpdate });
         },
@@ -68,7 +64,6 @@ const ProductManage: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     useEffect(() => {
         const saveAsync = async () => {
             if (!Isloaded) return
-            console.log("SAVE");
             try {
                 await AsyncStorage.setItem(KEY, JSON.stringify(cart));
             } catch (error) {
@@ -86,8 +81,6 @@ const ProductManage: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     const parsedData = JSON.parse(result);
                     ActionCart.cartRestore(parsedData.product)
                     Isloaded = true
-                    console.log("LOADED");
-
                 } else {
                     console.log("No data found in AsyncStorage");
                 }
