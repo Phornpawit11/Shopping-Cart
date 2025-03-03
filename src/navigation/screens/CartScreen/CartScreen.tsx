@@ -16,13 +16,10 @@ const styles = CartScreenStyles
 const CartScreen = () => {
   const { cart, ActionCart } = useCartContext()
   const [cartList, setCartList] = useState<ProductList[]>(cart.product)
-  console.log(cartList);
   
   useFocusEffect(
     React.useCallback(() => {
       const task = InteractionManager.runAfterInteractions(() => {
-        console.log({ cartList: cart.product });
-
         setCartList(cart.product)
 
       });
